@@ -9,10 +9,11 @@ class Cage(mongoengine.Document):
     registered_date = mongoengine.DateTimeField(default=datetime.datetime.now)
 
     name = mongoengine.StringField(required=True)
+    allows_dangerous = mongoengine.BooleanField(default=False)
+    has_toys = mongoengine.BooleanField(default=True)
     price = mongoengine.FloatField(required=True)
-    square_meters = mongoengine.FloatField(required=True)
-    is_carpeted = mongoengine.BooleanField(default=True)
-    allows_dangerous_snakes = mongoengine.BooleanField(default=False)
+    meters = mongoengine.FloatField(required=True)
+    carpeted = mongoengine.BooleanField(default=True)
 
     bookings = mongoengine.EmbeddedDocumentListField(Booking)
 

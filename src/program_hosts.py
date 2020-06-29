@@ -1,6 +1,8 @@
 import datetime
+import re
 
 from colorama import Fore
+from dateutil import parser
 
 import infrastructure.state as state
 import services.data_service as svc
@@ -53,55 +55,133 @@ def show_commands():
 def create_account():
     print(' ****************** REGISTER **************** ')
     name = input('Enter your Name : ')
-    email = input('Enter your Email : ')
 
-    old_account = svc.find_account_by_email(email)
-    if old_account:
-        error_msg(f'Account with {email} already exists.')
+    emailregex = re.compile(r'^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$')
+
+    email = emailregex.search(input('Enter your Email : ').strip().lower())
+
+    if not email:
+        error_msg(f'Not an Email')
         return
 
-    state.active_account = svc.create_account(name, email)
-    success_msg(f'New Account {state.active_account.id} with {email} created at {datetime.datetime.now}')
+    old_account = svc.find_account_by_email(email.group())
+    if old_account:
+        error_msg(f'Account with email - {email} already exists.')
+        return
+
+    state.active_account = svc.create_account(name, email.group())
+    success_msg(
+        f'New Account {state.active_account.id} with email - {email.group()} created at {datetime.datetime.now()}')
 
 
 def log_into_account():
     print(' ****************** LOGIN **************** ')
 
-    # TODO: Get email
-    # TODO: Find account in DB, set as logged in.
+    emailregex = re.compile(r'^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$')
 
-    print(" -------- NOT IMPLEMENTED -------- ")
+    email = emailregex.search(input('Enter your Email : ').strip().lower())
+
+    if not email:
+        error_msg(f'Not an Email')
+        return
+
+    account = svc.find_account_by_email(email.group())
+
+    if not account:
+        success_msg(f'could not find User with email {email.group()}')
+        return
+
+    state.active_account = account
+    success_msg(f'Logged in with no issues.')
 
 
 def register_cage():
     print(' ****************** REGISTER CAGE **************** ')
 
-    # TODO: Require an account
-    # TODO: Get info about cage
-    # TODO: Save cage to DB.
+    active_account = state.active_account
+    if not active_account:
+        error_msg(f'Please Login or create a new account : - ')
+        return
 
-    print(" -------- NOT IMPLEMENTED -------- ")
+    meters = input("How many square meters is the Cage ?")
+    if not meters:
+        error_msg(f'Enter the Cage Size in sq.mts ')
+        return
+
+    meters = float(meters)
+    carpeted = input("Is it carpeted [y, n]? ").lower().startswith('y')
+    has_toys = input("Have snake toys [y, n]? ").lower().startswith('y')
+    allow_dangerous = input(
+        "Can you host venomous snakes [y, n]? ").lower().startswith('y')
+    name = input("Give your cage a name: ")
+    price = float(input("How much is a noit ?"))
+
+    cage = svc.register_cage(
+        state.active_account, name,
+        allow_dangerous, has_toys, carpeted, meters,
+        price
+    )
+
+    state.reload_account()
+    success_msg(f'Cage registered with ID {cage.id}')
 
 
 def list_cages(supress_header=False):
     if not supress_header:
         print(' ******************     Your cages     **************** ')
 
-    # TODO: Require an account
-    # TODO: Get cages, list details
+    active_account = state.active_account
 
-    print(" -------- NOT IMPLEMENTED -------- ")
+    if not active_account:
+        error_msg(f'Please Login or create a new account : - ')
+        return
+
+    cages = svc.find_cages_for_user(active_account)
+    print(f'You have {len(cages)} cages.\n')
+    for idx, c in enumerate(cages):
+        print(f'Cage {idx + 1}')
+        print(f'Name - {c.name}')
+        print(f'Floor Size - {c.meters}')
+        print(f'Carpeted - {c.carpeted}')
+        print(f'Are there any Venomous Snakes - {c.allows_dangerous}')
+        print(f'Does It have Toys - {c.has_toys}')
+        print(f'One night = ${c.price}\n')
+        for b in c.bookings:
+            success_msg('      * Booking: {}, {} days, booked? {}'.format(
+                b.check_in_date,
+                (b.check_out_date - b.check_in_date).days,
+                'YES' if b.booked_date is not None else 'no'
+            ))
 
 
 def update_availability():
     print(' ****************** Add available date **************** ')
 
-    # TODO: Require an account
-    # TODO: list cages
-    # TODO: Choose cage
-    # TODO: Set dates, save to DB.
+    active_account = state.active_account
 
-    print(" -------- NOT IMPLEMENTED -------- ")
+    if not active_account:
+        error_msg(f'Please Login or create a new account : - ')
+        return
+
+    list_cages(supress_header=True)
+
+    cagenumber = input('Book a Cage ?')
+    if not cagenumber.strip():
+        error_msg('Cancelled')
+        print()
+
+    cagenumber = int(cagenumber)
+    account_cages = svc.find_cages_for_user(active_account)
+
+    selectedcage = account_cages[cagenumber - 1]
+
+    start_date = parser.parse(input('Enter available venom time slots?'))
+    duration = int(input("How long can a stay be ? "))
+
+    svc.add_available_date(selectedcage, start_date, duration)
+    state.reload_account()
+
+    success_msg(f'Date Added at {start_date} for {selectedcage.name}')
 
 
 def view_bookings():
