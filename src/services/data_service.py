@@ -1,11 +1,13 @@
 import datetime
 from typing import List
 
+import bson
 from mongoengine.queryset.visitor import Q
 
 from data.bookings import Booking
 from data.cages import Cage
 from data.owners import Owner
+from data.snakes import Snake
 
 
 def create_account(name: str, email: str) -> Owner:
@@ -52,10 +54,7 @@ def find_cages_for_user(account: Owner) -> List[Cage]:
     return cages
 
 
-def add_available_date(
-        selectedcage: Cage,
-        start_date: datetime.datetime,
-        duration: int):
+def add_available_date(selectedcage: Cage, start_date: datetime.datetime, duration: int):
     booking = Booking()
     booking.check_in_date = start_date
     booking.check_out_date = start_date + datetime.timedelta(days=duration)
@@ -65,3 +64,68 @@ def add_available_date(
     cage.save()
 
     return cage
+
+
+def add_snake(account: Owner, name: str, length: float, is_venomous: bool, species: str):
+    snake = Snake()
+    snake.name = name
+    snake.length = length
+    snake.is_venomous = is_venomous
+    snake.species = species
+    snake.save()
+
+    owner = find_account_by_email(account.email)
+    owner.snake_ids.append(snake.id)
+    owner.save()
+
+    return snake
+
+
+def get_snakes_for_user(user_id: bson.ObjectId) -> List[Snake]:
+    owner = Owner.objects(id=user_id).first()
+    snakes = Snake.objects(id__in=owner.snake_ids).all()
+
+    return list(snakes)
+
+
+def find_available_cages(snake: Snake, checkin: datetime.datetime,
+                         checkout: datetime.datetime) -> List[Cage]:
+    min_size = snake.length
+
+    query = Cage.objects() \
+        .filter(meters__gte=min_size) \
+        .filter(bookings__check_in_date__lte=checkin) \
+        .filter(bookings__check_out_date__gte=checkout)
+
+    if snake.is_venomous:
+        query = query.filter(allow_dangerous=True)
+
+    cages = query.order_by('price', 'meters')
+
+    final_cages = []
+    for c in cages:
+        for b in c.bookings:
+            if b.check_in_date <= checkin and b.check_out_date >= checkout and b.guest_snake_id is None:
+                final_cages.append(c)
+
+    return final_cages
+
+
+def book_cage(active_account: Owner, selected_snake: Snake, cage: Cage, check_in_date: datetime.datetime,
+              check_out_date: datetime.datetime):
+    booking: Booking = None
+
+    for b in cage.bookings:
+        if b.check_in_date <= check_in_date \
+                and b.check_out_date >= check_out_date \
+                and b.guest_snake_id is None:
+            booking = b
+            break
+
+    booking.booked_date = datetime.datetime.now()
+    booking.check_in_date = check_in_date
+    booking.check_out_date = check_out_date
+    booking.guest_snake_id = selected_snake.id
+    booking.guest_owner_id = active_account.id
+
+    cage.save()

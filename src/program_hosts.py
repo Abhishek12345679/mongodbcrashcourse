@@ -57,7 +57,6 @@ def create_account():
     name = input('Enter your Name : ')
 
     emailregex = re.compile(r'^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$')
-
     email = emailregex.search(input('Enter your Email : ').strip().lower())
 
     if not email:
@@ -78,7 +77,6 @@ def log_into_account():
     print(' ****************** LOGIN **************** ')
 
     emailregex = re.compile(r'^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$')
-
     email = emailregex.search(input('Enter your Email : ').strip().lower())
 
     if not email:

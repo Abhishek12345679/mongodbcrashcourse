@@ -26,12 +26,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98e6bf0a-f888-4be8-8a72-c6af5839e28a" name="Default Changelist" comment="commit">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/cages.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/cages.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/mongo_setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/mongo_setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/state.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/program_guests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/program_guests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/program_hosts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/program_hosts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/data_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/data_service.py" afterDir="false" />
     </list>
@@ -50,6 +46,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="hiddenUrls">
+      <set>
+        <option value="https://github.com/Abhishek12345679/mongodbcrashcourse.git" />
+      </set>
+    </option>
+  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/program_hosts.py" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -67,6 +70,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
@@ -152,25 +156,25 @@
       <screen x="0" y="23" width="1280" height="777" />
     </state>
     <state x="100" y="100" width="1080" height="600" key="DiffContextDialog/0.23.1280.777@0.23.1280.777" timestamp="1592730017050" />
-    <state width="1259" height="189" key="GridCell.Tab.0.bottom" timestamp="1593457964963">
+    <state width="1259" height="62" key="GridCell.Tab.0.bottom" timestamp="1593526139177">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1259" height="189" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1593457964963" />
+    <state width="1259" height="62" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1593526139177" />
     <state width="1259" height="319" key="GridCell.Tab.0.bottom/0.23.1280.777@0.23.1280.777" timestamp="1593436899055" />
-    <state width="1259" height="189" key="GridCell.Tab.0.center" timestamp="1593457964961">
+    <state width="1259" height="62" key="GridCell.Tab.0.center" timestamp="1593526139175">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1259" height="189" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1593457964961" />
+    <state width="1259" height="62" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1593526139175" />
     <state width="1259" height="319" key="GridCell.Tab.0.center/0.23.1280.777@0.23.1280.777" timestamp="1593436899053" />
-    <state width="1259" height="189" key="GridCell.Tab.0.left" timestamp="1593457964960">
+    <state width="1259" height="62" key="GridCell.Tab.0.left" timestamp="1593526139173">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1259" height="189" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1593457964960" />
+    <state width="1259" height="62" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1593526139173" />
     <state width="1259" height="319" key="GridCell.Tab.0.left/0.23.1280.777@0.23.1280.777" timestamp="1593436899051" />
-    <state width="1259" height="189" key="GridCell.Tab.0.right" timestamp="1593457964962">
+    <state width="1259" height="62" key="GridCell.Tab.0.right" timestamp="1593526139176">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1259" height="189" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1593457964962" />
+    <state width="1259" height="62" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1593526139176" />
     <state width="1259" height="319" key="GridCell.Tab.0.right/0.23.1280.777@0.23.1280.777" timestamp="1593436899054" />
     <state x="179" y="65" key="SettingsEditor" timestamp="1593452919513">
       <screen x="0" y="0" width="1280" height="800" />
