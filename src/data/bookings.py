@@ -1,5 +1,4 @@
 import mongoengine
-import datetime
 
 
 class Booking(mongoengine.EmbeddedDocument):
@@ -7,8 +6,8 @@ class Booking(mongoengine.EmbeddedDocument):
     guest_snake_id = mongoengine.ObjectIdField()
 
     booked_date = mongoengine.DateTimeField()
-    check_in_date = mongoengine.DateTimeField(default=datetime.datetime.now)
-    check_out_date = mongoengine.DateTimeField(default=datetime.datetime.now)
+    check_in_date = mongoengine.DateTimeField(required=True)
+    check_out_date = mongoengine.DateTimeField(required=True)
 
-    review = mongoengine.StringField(required=False)
+    review = mongoengine.StringField()
     ratings = mongoengine.FloatField(default=0.0)

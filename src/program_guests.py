@@ -111,10 +111,9 @@ def book_a_cage():
         error_msg('Add a snake to continue')
         return
 
-    view_your_snakes()
+    # view_your_snakes()
 
-    selected_snake = snakes[int(input("select the snake you want to book for - ")) - 1]
-
+    print("Let's start by finding available cages.")
     start_date = input("Enter the Check-in date in the format :- (dd-mm-yyyy) :- ")
 
     if not start_date:
@@ -135,6 +134,17 @@ def book_a_cage():
         print('Sorry! Checkout date cannot be earlier than checkin date')
         return
 
+    print()
+    for idx, s in enumerate(snakes):
+        print('{}. {} (length: {}, venomous: {})'.format(
+            idx + 1,
+            s.name,
+            s.length,
+            'yes' if s.is_venomous else 'no'
+        ))
+
+    selected_snake = snakes[int(input("select the snake you want to book for - ")) - 1]
+
     cages = svc.find_available_cages(selected_snake, check_in_date, check_out_date)
 
     print("There are {} cages available in that time.".format(len(cages)))
@@ -142,8 +152,8 @@ def book_a_cage():
         print(" {}. {} with {}m carpeted: {}, has toys: {}.".format(
             idx + 1,
             c.name,
-            c.square_meters,
-            'yes' if c.is_carpeted else 'no',
+            c.meters,
+            'yes' if c.carpeted else 'no',
             'yes' if c.has_toys else 'no'))
 
     if not cages:
@@ -158,10 +168,24 @@ def book_a_cage():
 
 def view_bookings():
     print(' ****************** Your bookings **************** ')
-    # TODO: Require an account
-    # TODO: List booking info along with snake info
+    account = state.active_account
+    if not account:
+        error_msg(f'Please Login or create an account')
+        return
 
-    print(" -------- NOT IMPLEMENTED -------- ")
+    snakes = {s.id: s for s in svc.get_snakes_for_user(account.id)}
+    print(snakes)
+    bookings = svc.get_bookings_for_user(state.active_account.email)
+
+    print("You have {} bookings.".format(len(bookings)))
+    for b in bookings:
+        # noinspection PyUnresolvedReferences
+        print(' * Snake: {} is booked at {} from {} for {} days.'.format(
+            snakes.get(b.guest_snake_id).name,
+            b.cage.name,
+            datetime.date(b.check_in_date.year, b.check_in_date.month, b.check_in_date.day),
+            (b.check_out_date - b.check_in_date).days
+        ))
 
 
 def success_msg(text):

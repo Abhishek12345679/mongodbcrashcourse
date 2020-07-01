@@ -90,7 +90,7 @@ def get_snakes_for_user(user_id: bson.ObjectId) -> List[Snake]:
 
 def find_available_cages(snake: Snake, checkin: datetime.datetime,
                          checkout: datetime.datetime) -> List[Cage]:
-    min_size = snake.length
+    min_size = 0
 
     query = Cage.objects() \
         .filter(meters__gte=min_size) \
@@ -98,7 +98,7 @@ def find_available_cages(snake: Snake, checkin: datetime.datetime,
         .filter(bookings__check_out_date__gte=checkout)
 
     if snake.is_venomous:
-        query = query.filter(allow_dangerous=True)
+        query = query.filter(allows_dangerous=True)
 
     cages = query.order_by('price', 'meters')
 
@@ -129,3 +129,24 @@ def book_cage(active_account: Owner, selected_snake: Snake, cage: Cage, check_in
     booking.guest_owner_id = active_account.id
 
     cage.save()
+
+
+def get_bookings_for_user(email: str) -> List[Booking]:
+    account = find_account_by_email(email)
+
+    booked_cages = Cage.objects() \
+        .filter(bookings__guest_owner_id=account.id) \
+        .only('bookings', 'name')
+
+    def map_cage_to_booking(cage, booking):
+        booking.cage = cage
+        return booking
+
+    bookings = [
+        map_cage_to_booking(cage, booking)
+        for cage in booked_cages
+        for booking in cage.bookings
+        if booking.guest_owner_id == account.id
+    ]
+
+    return bookings
